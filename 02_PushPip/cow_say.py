@@ -2,6 +2,22 @@ import argparse
 import cowsay
 
 
+def cow_say(args):
+    if args.list_cows:
+        print(cowsay.list_cows())
+        return
+
+    if args.message == " ":
+        lines = []
+        while True:
+            try:
+                line = input()
+            except EOFError:
+                break
+        message = " ".join(lines)
+        print(message)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
             description="Implementation of UNIX cowsay utility"
@@ -112,4 +128,5 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    print(args)
+    
+    cow_say(args)
