@@ -28,6 +28,12 @@ def cow_say(args):
         cowfile = args.cowfile
         cow = "default"
 
+    if args.preset:
+        preset = max(args.preset)
+    else:
+        preset = None
+
+    print(preset)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -79,56 +85,56 @@ if __name__ == "__main__":
             action="append_const",
             const="b",
             help="Borg mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-d",
             action="append_const",
             const="d",
             help="dead mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-g",
             action="append_const",
             const="g",
             help="gready mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-p",
             action="append_const",
             const="p",
             help="paranoia mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-s",
             action="append_const",
             const="s",
             help="stoned mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-t",
             action="append_const",
             const="t",
             help="tired mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-w",
             action="append_const",
             const="d",
             help="wired mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "-y",
             action="append_const",
             const="d",
             help="youth mode",
-            dest="present"
+            dest="preset"
     )
     parser.add_argument(
             "message",
