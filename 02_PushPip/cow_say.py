@@ -14,7 +14,8 @@ def cow_say(args):
                 line = input()
             except EOFError:
                 break
-        message = " ".join(lines)
+            lines.append(line)
+        message = "\n".join(lines)
     else:
         message = " ".join(args.message)
 
@@ -33,7 +34,18 @@ def cow_say(args):
     else:
         preset = None
 
-    print(preset)
+    print(
+        cowsay.cowsay(
+            message=message,
+            cow=cow,
+            preset=preset,
+            eyes=args.eye_string[:2],
+            tongue=args.tongue_string[:2],
+            width=args.column,
+            wrap_text=args.wrap_text,
+            cowfile=cowfile
+        )
+    )
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
