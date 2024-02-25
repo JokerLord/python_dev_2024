@@ -15,7 +15,18 @@ def cow_say(args):
             except EOFError:
                 break
         message = " ".join(lines)
-        print(message)
+    else:
+        message = " ".join(args.message)
+
+    if args.cowfile.find("/") == -1:
+        if args.cowfile in cowsay.list_cows():
+            cow = args.cowfile
+        else:
+            cow = "default"
+        cowfile = None
+    else:
+        cowfile = args.cowfile
+        cow = "default"
 
 
 if __name__ == "__main__":
@@ -32,7 +43,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
             "-f",
-            default="",
+            default="default",
             type=str,
             help="path to a particular cow picture file to use",
             dest="cowfile"
