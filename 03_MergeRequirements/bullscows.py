@@ -4,7 +4,8 @@ import os
 
 from urllib.request import urlopen
 from collections import Counter
-from cowsay import cowsay
+from io import StringIO
+from cowsay import cowsay, read_dot_cow
 
 def bullscows(guess: str, secret: str) -> (int, int):
     if len(guess) != len(secret):
@@ -26,8 +27,18 @@ def bullscows(guess: str, secret: str) -> (int, int):
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
+    cow = read_dot_cow(StringIO("""
+    $the_cow = <<EOC;
+             $thoughts
+              $thoughts
+               ___
+              (o o)
+             (  V  )
+            /--m-m-
+    EOC
+    """))
     while True:
-        print(cowsay(prompt))
+        print(cowsay(prompt, cowfile=cow))
         guess = input()
         if guess in valid:
             break
