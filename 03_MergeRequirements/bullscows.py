@@ -1,10 +1,14 @@
 import random
+import argparse
+import os
+
+from urllib.request import urlopen
 
 
 def bullscows(guess: str, secret: str) -> (int, int):
     if len(guess) != len(secret):
         raise ValueError("guess should be the size of secret")
-    
+
     bull_cnt = 0
     for i in range(len(guess)):
         if guess[i] == secret[i]:
@@ -43,3 +47,35 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     return attempt_cnt
 
 
+def read_dictionary(path: str, length: str) -> list[str]:
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as file:
+            words = [
+                word.strip() for word in file.readlines() if len(word.strip()) == length
+            ]
+    else:
+        try:
+            with urlopen(path) as file:
+                words = [
+                    word.decode("utf-8").strip()
+                    for word in file.readlines()
+                    if len(word.decode("utf-8").strip()) == length
+                ]
+        except Exception as e:
+            print(e)
+            print(f"{path} is not valid path or URL")
+            exit()
+    return words
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dictionary", type=str, help="dictionary filename or URL")
+    parser.add_argument(
+        "length", nargs="?", default=5, type=int, help="length of words"
+    )
+
+    args = parser.parse_args()
+
+    words = read_dictionary(args.dictionary, args.length)
+    print(words)
