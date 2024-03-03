@@ -3,21 +3,26 @@ import argparse
 import os
 
 from urllib.request import urlopen
+from collections import Counter
 
 
 def bullscows(guess: str, secret: str) -> (int, int):
     if len(guess) != len(secret):
         raise ValueError("guess should be the size of secret")
 
-    bull_cnt = 0
+    bulls, cows = 0, 0
     for i in range(len(guess)):
         if guess[i] == secret[i]:
-            bull_cnt += 1
+            bulls += 1
 
-    cow_cnt = len(set(guess).intersection(set(secret))) - bull_cnt
-    print(guess)
-    print(secret)
-    return bull_cnt, cow_cnt
+    guess_counter = Counter(guess)
+    secret_counter = Counter(secret)
+
+    for key in guess_counter:
+        if key in secret_counter:
+            cows += min(guess_counter[key], secret_counter[key])
+
+    return bulls, cows - bulls
 
 
 def ask(prompt: str, valid: list[str] = None) -> str:
