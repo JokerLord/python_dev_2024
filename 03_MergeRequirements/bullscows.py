@@ -11,7 +11,14 @@ def bullscows(guess: str, secret: str) -> (int, int):
     return bull_cnt, cow_cnt
 
 
-if __name__ == "__main__":
-    guess = input()
-    secret = input()
-    print(bullscows(guess, secret))
+def ask(prompt: str, valid: list[str] = None) -> str:
+    while True:
+        guess = input(prompt)
+        if valid and (guess in valid):
+            break
+    return guess
+
+
+def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
+    pass
+
