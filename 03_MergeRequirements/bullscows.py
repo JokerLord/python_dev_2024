@@ -15,6 +15,8 @@ def bullscows(guess: str, secret: str) -> (int, int):
             bull_cnt += 1
 
     cow_cnt = len(set(guess).intersection(set(secret))) - bull_cnt
+    print(guess)
+    print(secret)
     return bull_cnt, cow_cnt
 
 
@@ -31,6 +33,9 @@ def inform(format_string: str, bulls: int, cows: int) -> None:
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
+    if not words:
+        return 0
+
     secret = random.choice(words)
     attempt_cnt = 0
 
@@ -78,4 +83,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     words = read_dictionary(args.dictionary, args.length)
-    print(words)
+    print("You win! Attempts number: {}".format(gameplay(ask, inform, words)))
