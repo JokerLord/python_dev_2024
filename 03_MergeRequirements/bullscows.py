@@ -4,7 +4,7 @@ import os
 
 from urllib.request import urlopen
 from collections import Counter
-
+from cowsay import cowsay
 
 def bullscows(guess: str, secret: str) -> (int, int):
     if len(guess) != len(secret):
@@ -27,14 +27,15 @@ def bullscows(guess: str, secret: str) -> (int, int):
 
 def ask(prompt: str, valid: list[str] = None) -> str:
     while True:
-        guess = input(prompt)
+        print(cowsay(prompt))
+        guess = input()
         if guess in valid:
             break
     return guess
 
 
 def inform(format_string: str, bulls: int, cows: int) -> None:
-    print(format_string.format(bulls, cows))
+    print(cowsay(format_string.format(bulls, cows)))
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:

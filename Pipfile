@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 argparse = "*"
+python-cowsay = "*"
 
 [dev-packages]
 
