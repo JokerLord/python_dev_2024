@@ -28,7 +28,7 @@ def bullscows(guess: str, secret: str) -> (int, int):
 def ask(prompt: str, valid: list[str] = None) -> str:
     while True:
         guess = input(prompt)
-        if valid and (guess in valid):
+        if guess in valid:
             break
     return guess
 
@@ -38,9 +38,6 @@ def inform(format_string: str, bulls: int, cows: int) -> None:
 
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
-    if not words:
-        return 0
-
     secret = random.choice(words)
     attempt_cnt = 0
 
@@ -72,7 +69,6 @@ def read_dictionary(path: str, length: str) -> list[str]:
                     if len(word.decode("utf-8").strip()) == length
                 ]
         except Exception as e:
-            print(e)
             print(f"{path} is not valid path or URL")
             exit()
     return words
@@ -88,4 +84,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     words = read_dictionary(args.dictionary, args.length)
-    print("You win! Attempts number: {}".format(gameplay(ask, inform, words)))
+    if len(words) == 0:
+        print("Dictionary is empty")
+    else:
+        print("You win! Attempts number: {}".format(gameplay(ask, inform, words)))
