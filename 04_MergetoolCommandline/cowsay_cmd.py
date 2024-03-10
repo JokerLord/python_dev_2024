@@ -103,7 +103,7 @@ class CowsayCMD(cmd.Cmd):
                     params[res[i]] = res[i + 1]
                 elif res[i] == "-e" and len(res[i + 1]) >= 2:
                     params[res[i]] = res[i + 1]
-                elif res[i] == "-T" and len(res[i + 1] == 2):
+                elif res[i] == "-T" and len(res[i + 1]) == 2:
                     params[res[i]] = res[i + 1]
                 else:
                     print("Invalid command syntax")
@@ -119,8 +119,55 @@ class CowsayCMD(cmd.Cmd):
             tongue=params["-T"]
         ))
 
+    def complete_cowsay(self, text, line, begidx, endidx):
+        DICT = {
+            "-c": cowsay.list_cows(),
+        }
 
-    
+        res = shlex.split(line)
+        key = res[-1] if begidx == endidx else res[-2]
+        return [c for c in DICT[key] if c.startswith(text)]
+
+    def do_cowthink(self, args):
+        """
+        Generates an ASCII picture of a cow saying something provided by the user
+
+        cowthink [-c cow] [-e eye_string] [-T tongue_string] message
+
+        -c: The name of the cow (valid names from list_cows, default: "default")
+        -e: A custom eye string (at least two characters, default: "oo")
+        -T: A custom tongue string (must be two characters, default: "  ")
+        """
+        
+        params = {
+            "-c": "default",
+            "-e": "oo",
+            "-T": "  "
+        }
+
+        res = shlex.split(args)
+        if len(res) in [1, 3, 5, 7]:
+            for i in range(0, len(res) - 1, 2):
+                if (res[i] == "-c") and res[i + 1] in cowsay.list_cows():
+                    params[res[i]] = res[i + 1]
+                elif res[i] == "-e" and len(res[i + 1]) >= 2:
+                    params[res[i]] = res[i + 1]
+                elif res[i] == "-T" and len(res[i + 1]) == 2:
+                    params[res[i]] = res[i + 1]
+                else:
+                    print("Invalid command syntax")
+                    return
+        else:
+            print("Invalid command syntax")
+            return
+
+        print(cowsay.cowthink(
+            res[-1],
+            cow=params["-c"],
+            eyes=params["-e"],
+            tongue=params["-T"]
+        ))
+
 
 
 if __name__ == "__main__":
