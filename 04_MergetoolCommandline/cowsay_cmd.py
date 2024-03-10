@@ -6,6 +6,9 @@ import cmd
 class CowsayCMD(cmd.Cmd):
     prompt = "cowsay command>> "
 
+    def do_exit(self, args):
+        return 1
+
     def do_list_cows(self, args):
         """
         List of all cow file names in the given directory
