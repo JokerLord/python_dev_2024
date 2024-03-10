@@ -168,6 +168,14 @@ class CowsayCMD(cmd.Cmd):
             tongue=params["-T"]
         ))
 
+    def complete_cowthink(self, text, line, begidx, endidx):
+        DICT = {
+            "-c": cowsay.list_cows(),
+        }
+
+        res = shlex.split(line)
+        key = res[-1] if begidx == endidx else res[-2]
+        return [c for c in DICT[key] if c.startswith(text)]
 
 
 if __name__ == "__main__":
