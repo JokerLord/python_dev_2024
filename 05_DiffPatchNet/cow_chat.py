@@ -5,6 +5,11 @@ import cowsay
 CLIENTS = {}
 
 
+async def async_write(writer, text):
+    writer.write(f"{text}\n".encode())
+    await writer.drain()
+
+
 async def cow_chat(reader, writer):
     is_registered = False
     client_id = "{}:{}".format(*writer.get_extra_info("peername"))
@@ -23,22 +28,33 @@ async def cow_chat(reader, writer):
         for q in done:
             if q is send:
                 send = asyncio.create_task(reader.readline())
-                command = shlex.split(q.result().decode().strip())
-                if not command:
+                args = shlex.split(q.result().decode().strip())
+                if not args:
                     continue
-                if command[0] == "who":
-                    writer.write(
-                        f"Registered users: {' '.join(CLIENTS.keys())}\n".encode()
+                if args[0] == "who":
+                    await async_write(
+                        writer, f"Registered users: {' '.join(CLIENTS.keys())}"
                     )
-                    await writer.drain()
-                elif command[0] == "cows":
+                elif args[0] == "cows":
                     available_cows = [
                         cow for cow in cowsay.list_cows() if cow not in CLIENTS
                     ]
-                    writer.write(
-                        f"Cows available: {' '.join(available_cows)}\n".encode()
+                    await async_write(
+                        writer, f"Cows available: {' '.join(available_cows)}"
                     )
-
+                elif args[0] == "login":
+                    if is_registered:
+                        await async_write(
+                            writer, "Failed to login. You are already registered"
+                        )
+                    elif len(args) < 2:
+                        await async_write(
+                            writer, "Failed to login. Login name wasn't passed"
+                        )
+                    elif len(args) > 2:
+                        await async_write(
+                            writer, "Failed to login. Too many parameters"
+                        )
 
     send.cancel()
     if receive:
