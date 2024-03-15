@@ -74,17 +74,27 @@ async def cow_chat(reader, writer):
                         await async_write(writer, "Invalid command 'say' syntax")
                     else:
                         if args[1] in CLIENTS:
-                            await CLIENTS[args[1]].put(
-                                f"{cowsay.cowsay(args[2], cow=me)}"
-                            )
+                            await CLIENTS[args[1]].put(cowsay.cowsay(args[2], cow=me))
                         else:
                             await async_write(writer, "No such user online")
+                elif args[0] == "yield":
+                    if not is_registered:
+                        await async_write(writer, "You are not registered")
+                    elif len(args) != 2:
+                        await async_write(writer, "Invalid command 'yield' syntax")
+                    else:
+                        for client in CLIENTS:
+                            if client != me:
+                                await CLIENTS[client].put(
+                                    cowsay.cowsay(args[1], cow=me)
+                                )
             if q is receive:
                 receive = asyncio.create_task(CLIENTS[me].get())
                 await async_write(writer, q.result())
     send.cancel()
     if receive:
         receive.cancel()
+    del CLIENTS[me]
     writer.close()
     await writer.wait_closed()
 
