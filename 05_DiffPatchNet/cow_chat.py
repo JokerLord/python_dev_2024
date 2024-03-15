@@ -1,4 +1,5 @@
 import asyncio
+import shlex
 
 CLIENTS = {}
 
@@ -21,7 +22,12 @@ async def cow_chat(reader, writer):
         for q in done:
             if q is send:
                 send = asyncio.create_task(reader.readline())
-                print(q.result())
+                command = shlex.split(q.result().decode().strip())
+                if not command:
+                    continue
+                if command[0] == "who":
+                    writer.write(f"Registered users: {' '.join(CLIENTS.keys())}\n".encode())
+                    await writer.drain()
     
     send.cancel()
     if receive:
