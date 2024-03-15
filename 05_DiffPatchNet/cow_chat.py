@@ -1,5 +1,6 @@
 import asyncio
 import shlex
+import cowsay
 
 CLIENTS = {}
 
@@ -26,9 +27,19 @@ async def cow_chat(reader, writer):
                 if not command:
                     continue
                 if command[0] == "who":
-                    writer.write(f"Registered users: {' '.join(CLIENTS.keys())}\n".encode())
+                    writer.write(
+                        f"Registered users: {' '.join(CLIENTS.keys())}\n".encode()
+                    )
                     await writer.drain()
-    
+                elif command[0] == "cows":
+                    available_cows = [
+                        cow for cow in cowsay.list_cows() if cow not in CLIENTS
+                    ]
+                    writer.write(
+                        f"Cows available: {' '.join(available_cows)}\n".encode()
+                    )
+
+
     send.cancel()
     if receive:
         receive.cancel()
