@@ -12,11 +12,12 @@ async def async_write(writer, text):
 
 async def cow_chat(reader, writer):
     is_registered = False
+    quit_flag = False
     client_id = "{}:{}".format(*writer.get_extra_info("peername"))
 
     send = asyncio.create_task(reader.readline())  # when client enter message
     receive = None  # no receive yet, because client is not registered
-    while not reader.at_eof():
+    while (not reader.at_eof()) and (not quit_flag):
         if receive is None:
             done, pending = await asyncio.wait(
                 [send], return_when=asyncio.FIRST_COMPLETED
@@ -88,6 +89,8 @@ async def cow_chat(reader, writer):
                                 await CLIENTS[client].put(
                                     cowsay.cowsay(args[1], cow=me)
                                 )
+                elif args[0] == "quit":
+                    quit_flag = True
             if q is receive:
                 receive = asyncio.create_task(CLIENTS[me].get())
                 await async_write(writer, q.result())
