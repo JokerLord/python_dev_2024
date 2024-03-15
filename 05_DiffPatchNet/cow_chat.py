@@ -55,7 +55,18 @@ async def cow_chat(reader, writer):
                         await async_write(
                             writer, "Failed to login. Too many parameters"
                         )
-
+                    else:
+                        available_cows = [
+                            cow for cow in cowsay.list_cows() if cow not in CLIENTS
+                        ]
+                        if args[1] in available_cows:
+                            me = args[1]
+                            CLIENTS[me] = asyncio.Queue()
+                            receive = asyncio.create_task(CLIENTS[me].get())
+                            is_registered = True
+                            await async_write(writer, "Login success")
+                        else:
+                            await async_write(writer, "Login not awailable")
     send.cancel()
     if receive:
         receive.cancel()
