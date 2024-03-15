@@ -67,6 +67,21 @@ async def cow_chat(reader, writer):
                             await async_write(writer, "Login success")
                         else:
                             await async_write(writer, "Login not awailable")
+                elif args[0] == "say":
+                    if not is_registered:
+                        await async_write(writer, "You are not registered")
+                    elif len(args) != 3:
+                        await async_write(writer, "Invalid command 'say' syntax")
+                    else:
+                        if args[1] in CLIENTS:
+                            await CLIENTS[args[1]].put(
+                                f"{cowsay.cowsay(args[2], cow=me)}"
+                            )
+                        else:
+                            await async_write(writer, "No such user online")
+            if q is receive:
+                receive = asyncio.create_task(CLIENTS[me].get())
+                await async_write(writer, q.result())
     send.cancel()
     if receive:
         receive.cancel()
